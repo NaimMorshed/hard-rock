@@ -1,6 +1,19 @@
+const spinnerVisibility = value => {
+    if (value) {
+        document.getElementById('spinner').style.display = 'block';
+    }
+    else {
+        document.getElementById('spinner').style.display = 'none';
+    }
+}
+spinnerVisibility(false);
+
 const searchButton = async () => {
+    spinnerVisibility(true);
+    clearCards();
     const inputField = document.querySelector('#inputField').value;
     if (inputField == "") {
+        spinnerVisibility(false);
         alert("Input field cannot be empty!")
     }
     else {
@@ -11,8 +24,8 @@ const searchButton = async () => {
     }
 }
 const loadData = data => {
+    spinnerVisibility(false);
     buttonIdCount = 0;
-    clearCards();
     for (let i = 0; i < data.length; i++) {
         const parentNode = document.getElementById('musicCard');
         const childNode = document.createElement('div');
@@ -27,12 +40,12 @@ const loadData = data => {
         </div>
         <div class="col-md-5 text-md-right text-center">
             <button 
-                    onclick = "{setAudioPreview('${data[i].preview}', this.id)}" 
-                    type="button"
-                    class="btn btn-primary margin-right"
-                    id = "${buttonIdCount++}">
-                    Play
-                </button>
+                onclick = "{setAudioPreview('${data[i].preview}', this.id)}" 
+                type="button"
+                class="btn btn-primary margin-right"
+                id = "${buttonIdCount++}">
+                Play
+            </button>
             <button onclick = "lyricButton('${data[i].artist.name}', '${data[i].title}')" 
                 class="btn btn-success">
                 Get Lyrics
@@ -45,12 +58,15 @@ const loadData = data => {
 }
 const clearCards = () => {
     document.getElementById('musicCard').innerHTML = '';
+    document.getElementById('single-lyrics').innerText = '';
 }
 const lyricButton = (name, title) => {
+    spinnerVisibility(true);
     const url = `https://api.lyrics.ovh/v1/${name}/${title}`
     fetch(url)
         .then(res => res.json())
         .then(data => {
+            spinnerVisibility(false);
             document.getElementById('single-lyrics').innerText = data.lyrics;
         })
 }
