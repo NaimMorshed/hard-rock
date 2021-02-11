@@ -45,3 +45,12 @@ img{
     border-radius: 50%;
     border: 2px solid #2c2b2e;
 }
+#not-found{
+    display: none;
+}
+#not-found-div{
+    width: 170px;
+}
+#not-found:hover{
+    cursor: pointer;
+}

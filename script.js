@@ -9,6 +9,7 @@ const spinnerVisibility = value => {
 spinnerVisibility(false);
 
 const searchButton = async () => {
+    document.getElementById('not-found').style.display = 'none';
     spinnerVisibility(true);
     clearCards();
     const inputField = document.querySelector('#inputField').value;
@@ -26,39 +27,49 @@ const searchButton = async () => {
 const loadData = data => {
     spinnerVisibility(false);
     buttonIdCount = 0;
-    for (let i = 0; i < data.length; i++) {
-        const parentNode = document.getElementById('musicCard');
-        const childNode = document.createElement('div');
-        childNode.className = 'single-result row align-items-center my-3 p-3';
-        const childElements = `
-        <div class="col-md-2">
-            <img src="${data[i].artist.picture_small}">
-        </div>
-        <div class="col-md-5">
-            <h3 class="lyrics-name">${data[i].title}</h3>
-            <p class="author lead">Album by <span>${data[i].artist.name}</span></p>
-        </div>
-        <div class="col-md-5 text-md-right text-center">
-            <button 
-                onclick = "{setAudioPreview('${data[i].preview}', this.id)}" 
-                type="button"
-                class="btn btn-primary margin-right"
-                id = "${buttonIdCount++}">
-                Play
-            </button>
-            <button onclick = "lyricButton('${data[i].artist.name}', '${data[i].title}')" 
-                class="btn btn-success">
-                Get Lyrics
-            </button>
-        </div>
-        `;
-        childNode.innerHTML = childElements;
-        parentNode.appendChild(childNode);
+    console.log(data);
+    if (data.length == 0) {
+        spinnerVisibility(false);
+        document.getElementById('not-found').style.display = 'block';
     }
+    else {
+        for (let i = 0; i < data.length; i++) {
+            const parentNode = document.getElementById('musicCard');
+            const childNode = document.createElement('div');
+            childNode.className = 'single-result row align-items-center my-3 p-3';
+            const childElements = `
+            <div class="col-md-2">
+                <img src="${data[i].artist.picture_small}">
+            </div>
+            <div class="col-md-5">
+                <h3 class="lyrics-name">${data[i].title}</h3>
+                <p class="author lead">Album by <span>${data[i].artist.name}</span></p>
+            </div>
+            <div class="col-md-5 text-md-right text-center">
+                <button 
+                    onclick = "{setAudioPreview('${data[i].preview}', this.id)}" 
+                    type="button"
+                    class="btn btn-primary margin-right"
+                    id = "${buttonIdCount++}">
+                    Play
+                </button>
+                <button onclick = "lyricButton('${data[i].artist.name}', '${data[i].title}')" 
+                    class="btn btn-success">
+                    Get Lyrics
+                </button>
+            </div>
+            `;
+            childNode.innerHTML = childElements;
+            parentNode.appendChild(childNode);
+        }
+    }
+
+
 }
 const clearCards = () => {
     document.getElementById('musicCard').innerHTML = '';
     document.getElementById('single-lyrics').innerText = '';
+    document.querySelector('#audioId').pause();
 }
 const lyricButton = (name, title) => {
     spinnerVisibility(true);
@@ -84,7 +95,7 @@ const setAudioPreview = (preview, id) => {
         buttonId.innerText = "Play";
         audioTag.pause();
     }
-    
+
 }
 const clearAllOtherButton = exceptId => {
     for (let i = 0; i < buttonIdCount; i++) {
